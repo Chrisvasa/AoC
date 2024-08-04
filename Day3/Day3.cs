@@ -1,76 +1,91 @@
 ﻿using System.Diagnostics;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Channels;
 
 namespace AoC.Day3;
 
 public static class Day3
 {
+    private static string[]? _lines;
     private static int _maxLength;
-    public static void PartOne(string path)
+    private static int sumPart = 0;
+    private static int sumGear = 0;
+
+    public static void Solve(string path)
     {
-        if (!File.Exists(path))
-        {
-            Console.WriteLine("File not found.");
-            return;
-        }
-
-        string[] line = File.ReadAllLines(path);
-        StringBuilder currNum = new StringBuilder();
-        _maxLength = line.Length;
-        int sum = 0;
-
-        var sw = new Stopwatch();
-        sw.Start();
+        ReadFile(path);
         
         for (int i = 0; i < _maxLength; i++)
         {
             for (int j = 0; j < _maxLength; j++)
             {
-                if (Char.IsDigit(line[i][j]))
+                // if (_lines[i][j] == '*')
+                // {
+                //     FindAdjacentNumbers(i, j);
+                // }
+
+                if (!char.IsLetterOrDigit(_lines[i][j]) && _lines[i][j] != '.')
                 {
-                    while (j < _maxLength && Char.IsDigit(line[i][j]))
-                        currNum.Append(line[i][j++]);
-                    
-                    if (SearchAdjacent(ref line, currNum.Length, i, j))
-                        sum += int.Parse(currNum.ToString());
-                    currNum.Clear();
+                    FindAdjacentNumbers(i, j);
                 }
             }
         }
-        sw.Stop();
-        Console.WriteLine(sum);
-        Console.WriteLine($"It took: {sw.ElapsedMilliseconds} ms to search the file.");
+    }
+    
+    private static void ReadFile(string path)
+    {
+        if (!File.Exists(path))
+        {
+            Console.WriteLine("Could not open file!");
+            return;
+        }
+
+        _lines = File.ReadAllLines(path);
+        _maxLength = _lines.Length;
     }
 
-    static bool SearchAdjacent(ref string[] line, int numLength, int row, int col)
+    private static void FindAdjacentNumbers(int lineY, int lineX)
     {
-        // Gets the start and end index for row (row - 1, row and row + 1 if possible)
-        int start = (row > 0) ? row - 1 : row; 
-        int end = (row < _maxLength - 1) ? row + 1 : row;
-        // Gets the start and end of the current number we are checking adjacent values to
-        // Since we are passing the END index of the number in col, we are making sure that the value before
-        // and after are within bounds of the array
-        int s = (col - numLength - 1 >= 0) ? col - numLength - 1 : col;
-        int e = (col < _maxLength - 1) ? col + 1 : col;
-        
-        for (int i = start; i <= end; i++)
-            for (int j = s; j < e; j++)
-                if ((Char.IsSymbol(line[i][j]) || Char.IsPunctuation(line[i][j]) || Char.IsSeparator(line[i][j])) && line[i][j] != '.') 
-                    return true;
-        return false;
+        int minRow = Math.Max(0, lineY - 1);
+        int maxRow = Math.Min(_maxLength - 1, lineY + 1);
+        int minCol = Math.Max(0, lineX - 1);
+        int maxCol = Math.Min(_maxLength - 1, lineX + 1);
+
+        for (int y = minRow; y <= maxRow; y++)
+        {
+            for (int x = minCol; x <= maxCol; x++)
+            {
+                if (char.IsDigit(_lines[y][x]))
+                {
+                    FindStart(ref x, _lines[y]);
+                    int temp = GetNumber(ref x, _lines[y]);
+                    if (temp != - 1)
+                        Console.WriteLine(temp);
+                }
+            }
+        }
+    }
+    
+    private static int GetNumber(ref int x, string line)
+    {
+        string num = "";
+        while (x < _maxLength && char.IsDigit(line[x]))
+        {
+            num += line[x++];
+        }
+
+        if (!string.IsNullOrWhiteSpace(num))
+        {
+            return int.Parse(num);
+        }
+
+        return -1;
+    }
+    
+    // Method that finds the beginning of a given number
+    private static void FindStart(ref int x, string line)
+    {
+        while (x > 0 && char.IsDigit(line[x - 1]))
+            x--;
     }
 }
-
-/*
- * Find adjacent numbers to a symbol.
- * Find symbols and search their surroundings?
- *
- * [ - s s s - - ]
- * [ - s * s - - ]
- * [ - s s s - - ]
- * Symbol on row 2, and then search adjacent "boxes"
- *
- * How to handle "edge-cases"?
-*/

@@ -13,7 +13,8 @@ namespace AoC
             // Day1.Day1.PartOne(path);
             // Day1.Day1.PartTwo(path);
             // ParseFile(path); // Day 2
-            PartOne(path);
+            // PartOne(path);
+            Solve(path);
         }
     }
 }
