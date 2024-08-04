@@ -8,28 +8,28 @@ public static class Day3
 {
     private static string[]? _lines;
     private static int _maxLength;
-    private static int sumPart = 0;
-    private static int sumGear = 0;
+    private static int _sumPart = 0;
+    private static int _sumGear = 0;
 
     public static void Solve(string path)
     {
         ReadFile(path);
-        
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
         for (int i = 0; i < _maxLength; i++)
         {
             for (int j = 0; j < _maxLength; j++)
             {
-                // if (_lines[i][j] == '*')
-                // {
-                //     FindAdjacentNumbers(i, j);
-                // }
-
                 if (!char.IsLetterOrDigit(_lines[i][j]) && _lines[i][j] != '.')
                 {
                     FindAdjacentNumbers(i, j);
                 }
             }
         }
+        sw.Stop();
+        Console.WriteLine($"Sum of all parts is: {_sumPart}");
+        Console.WriteLine($"Sum of all gears is: {_sumGear}");
+        Console.WriteLine($"To find both sums took {sw.ElapsedMilliseconds} ms.");
     }
     
     private static void ReadFile(string path)
@@ -50,6 +50,7 @@ public static class Day3
         int maxRow = Math.Min(_maxLength - 1, lineY + 1);
         int minCol = Math.Max(0, lineX - 1);
         int maxCol = Math.Min(_maxLength - 1, lineX + 1);
+        List<int> numbers = new List<int>();
 
         for (int y = minRow; y <= maxRow; y++)
         {
@@ -59,11 +60,17 @@ public static class Day3
                 {
                     FindStart(ref x, _lines[y]);
                     int temp = GetNumber(ref x, _lines[y]);
-                    if (temp != - 1)
-                        Console.WriteLine(temp);
+                    if (temp != -1)
+                    {
+                        _sumPart += temp;
+                        numbers.Add(temp);
+                    }
                 }
             }
         }
+
+        if (numbers.Count == 2)
+            _sumGear += numbers[0] * numbers[1];
     }
     
     private static int GetNumber(ref int x, string line)
