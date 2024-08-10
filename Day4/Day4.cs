@@ -1,4 +1,6 @@
-﻿namespace AoC.Day4;
+﻿using System.Diagnostics;
+
+namespace AoC.Day4;
 
 public class Day4
 {
@@ -12,6 +14,9 @@ public class Day4
         int sum = 0;
         int bumSum = 0;
         int[] timesToRun = new int[_maxLength];
+        
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
         
         for (int i = 0; i < _maxLength; i++)
         {
@@ -36,8 +41,10 @@ public class Day4
             bumSum += timesToRun[i];
             sum += count;
         }
+        sw.Stop();
         Console.WriteLine(sum);
         Console.WriteLine(bumSum);
+        Console.WriteLine($"To find both sums took {sw.ElapsedMilliseconds} ms.");
     }
     
     private static void ReadFile(string path)

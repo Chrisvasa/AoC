@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Text;
-using System.Threading.Channels;
 
 namespace AoC.Day3;
 
@@ -11,7 +9,7 @@ public static class Day3
     private static int _sumPart = 0;
     private static int _sumGear = 0;
 
-    public static void Solve(string path)
+    public static void GearRatios(string path)
     {
         ReadFile(path);
         Stopwatch sw = new Stopwatch();
