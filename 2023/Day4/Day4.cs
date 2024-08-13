@@ -7,7 +7,7 @@ public class Day4
     private static string[] _lines;
     private static int _maxLength;
 
-    // Will refactor to improve performance.. this is a disaster but it works and was fast to code :D
+    // Will refactor to improve performance... this is a disaster, but it works and was fast to code :D
     public static void Scratchcards(string path)
     {
         ReadFile(path);
