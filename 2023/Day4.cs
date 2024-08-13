@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using AoC.Util;
 
 namespace AoC.Day4;
 
@@ -8,9 +9,10 @@ public class Day4
     private static int _maxLength;
 
     // Will refactor to improve performance... this is a disaster, but it works and was fast to code :D
-    public static void Scratchcards(string path)
+    public static void Scratchcards()
     {
-        ReadFile(path);
+        FileManager fm = new FileManager("Day4", "2023");
+        ReadFile(fm.FilePath);
         int sum = 0;
         int bumSum = 0;
         int[] timesToRun = new int[_maxLength];
